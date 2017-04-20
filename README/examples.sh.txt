@@ -1,0 +1,21 @@
+# comment
+$ Finder comment $path "new comment"
+$ Finder comment $path
+new comment
+$ Finder comment $path "" # unset comment
+
+# label
+# 0 = none
+# 1 = orange
+# 2 = red
+# 3 = yellow
+# 4 = blue
+# 5 = purple
+# 6 = green
+# 7 = grey 
+$ Finder label $path
+0
+
+$ Finder label $path 2 # set red
+$ Finder label $path
+2

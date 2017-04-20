@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+usage="usage: ${BASH_SOURCE[0]##*/} path image"
+
+[[ $# != 2 ]] || [[ $1 == "--help" ]] && {
+	echo "$usage"
+	[[ $1 == "--help" ]]; exit # exit 0 if --help
+}
+
+[[ $OSTYPE != *darwin* ]] && echo "SKIP: OS X only" && exit 0
+
+[[ -z $1 ]] && { echo "ERROR: \$1 '' EMPTY"; exit 1; }
+[[ -z $2 ]] && { echo "ERROR: \$2 '' EMPTY"; exit 1; }
+! [ -e "$1" ] && { echo "ERROR: $1 NOT EXISTS"; exit 1; }
+path="$1"
+img="$2"
+[[ $path == */ ]] && path="${path::${#path}-1}"
+# sips -i update $img modified datetime
+# set Icon only if no Icon (GetFileInfo "$img" | grep -q C)
+[ -f "$path" ] && GetFileInfo "$path" | grep ^"attributes:" | grep -q C && return 0
+GetFileInfo "$img" | grep ^"attributes:" | grep -q C || { 
+	( set -x; sips -i "$img" &> /dev/null ) || exit
+}
+
+[ -e "$path"/.DS_Store ] && { set -x; rm "$path"/.DS_Store; { set +x; } 2>/dev/null; }
+tmp="$TMPDIR"$$.rsrc
+[ -e "$tmp" ] && rm "$tmp" 2> /dev/null
+# Extract the icon to its own resource file:
+( set -x; DeRez -only icns "$img" > $tmp ) || exit
+# { set -x; SetFile -a C "$img"; { set +x; } 2>/dev/null; }
+[ -e "$path"/$'Icon\r' ] && {
+	( set -x; rm -f "$path"/$'Icon\r' ) || exit
+}
+[ -d "$path" ] && { # dir/
+	# make Icon invisible (touch .Icon, chflags hidden .Icon, mv .Icon Icon)
+	# required for Dock folders
+	( set -x; /usr/bin/touch "$path"/.$'Icon\r' ) || exit
+	[ -e "$path"/.$'Icon\r' ] && {
+		( set -x; chflags hidden "$path"/.$'Icon\r' ) || exit
+	}
+	[ -e "$path"/.$'Icon\r' ] && {
+		( set -x; mv "$path"/.$'Icon\r' "$path"/$'Icon\r' ) || exit
+	}
+}
+
+if [ -d "$path" ]; then # dir/
+	( set -x; Rez -append "$tmp" -o "$path"/Icon? ) || exit
+else # file
+	# append this resource to the file you want to icon-ize.
+	( set -x; Rez -append "$tmp" -o "$1" ) || exit
+fi
+# Use the resource to set the icon.
+( set -x; SetFile -a C "$path" ) || exit
+rm "$tmp"
+( set -x; /usr/bin/touch "$path" ) || exit # required to update Icon
+

@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+usage="usage: ${BASH_SOURCE[0]##*/} path ... [label]"
+
+[[ $# == 0 ]] || [[ $1 == "--help" ]] && {
+	echo "$usage"
+	[[ $1 == "--help" ]]; exit # exit 0 if --help
+}
+
+[[ $OSTYPE != *darwin* ]] && echo "SKIP: OS X only" && exit 0
+
+# 0 = none
+# 1 = orange
+# 2 = red
+# 3 = yellow
+# 4 = blue
+# 5 = purple
+# 6 = green
+# 7 = grey
+[[ ${!#} -gt -1 ]] &> /dev/null || { # get label
+applescript="
+on run argv
+	tell application \"Finder\"
+		repeat with arg in argv
+			set f to (POSIX file (arg as text) as alias)
+			log (get label index of f)
+		end repeat
+	end tell
+end run"
+osascript -e "$applescript" "$@"; exit
+}
+
+applescript="
+on run argv
+	tell application \"Finder\"
+		repeat with arg in argv
+			set f to (POSIX file (arg as text) as alias)
+			if get label index of f is not ${!#} then
+				set label index of f to ${!#}
+			end if
+		end repeat
+	end tell
+end run"
+osascript -e "$applescript" "${@:1:($#-1)}" 1> /dev/null

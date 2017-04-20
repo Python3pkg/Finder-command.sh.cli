@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+usage="usage: ${BASH_SOURCE[0]##*/} path"
+
+[[ $# == 0 ]] || [[ $1 == "--help" ]] && {
+	echo "$usage"
+	[[ $1 == "--help" ]]; exit # exit 0 if --help
+}
+
+[[ $OSTYPE != *darwin* ]] && echo "SKIP: OS X only" && exit 0
+
+[[ $1 != /* ]] && echo "ERROR: $1 absolute/fullpath required (started with /)" && exit 0
+! [ -e "$1" ] && ! [ -L "$1" ] && echo "ERROR: $1 NOT EXISTS" && exit 0
+
+osascript <<EOF
+tell application "Finder"
+	set wlist to every Finder window 
+	repeat with i from 1 to number of items in wlist
+		set w to item i of wlist
+		if (POSIX PATH of (target of w as text)) is "$1" then
+			tell w to activate --show window
+			tell application "Finder" to activate
+			return
+		end if
+	end repeat
+	reveal (POSIX FILE "$1")
+	activate
+end tell
+EOF
+

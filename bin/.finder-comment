@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+[[ $# == 0 ]] || [[ $1 == "--help" ]] && {
+	cat <<EOF
+usage: ${BASH_SOURCE[0]##*/} path [comment]
+EOF
+	[[ $1 == "--help" ]]; exit # exit 0 if --help
+}
+
+[[ $OSTYPE != *darwin* ]] && echo "SKIP: OS X only" && exit 0
+
+path="$1"
+[[ $# == 1 ]] && { # get
+	comment="$(osascript <<EOF
+tell application "Finder"
+	set posix to POSIX file "$path"
+	get comment of (posix as alias)
+end tell
+EOF
+)" || exit
+	[[ -n $comment ]] && echo "$comment"
+	exit 0
+}
+# set
+shift
+applescript='tell application "Finder"
+	set posix to POSIX file "$path"
+	set comment of (posix as alias) to "$@"
+end tell'
+( set -x; osascript -e "$applescript" 1> /dev/null )

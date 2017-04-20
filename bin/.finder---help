@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+echo "usage: ${BASH_SOURCE[0]##*/} COMMAND [options]
+
+Available commands:
+	todo"

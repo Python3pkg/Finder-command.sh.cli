@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+[[ $OSTYPE != *darwin* ]] && echo "SKIP: OS X only" && exit 0
+
+path="${BASH_SOURCE[0]%/*}"
+image="${BASH_SOURCE[0]%/*}"/Icon.png
+( set -x; Finder-Icon "$path" "$image" )
+# now open in Finder and see :)

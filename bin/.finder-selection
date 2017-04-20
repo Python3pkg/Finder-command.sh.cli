@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# -*- coding: utf-8 -*-
+{ set +x; } 2>/dev/null
+
+usage="usage: ${BASH_SOURCE[0]##*/}"
+
+[[ $1 == "--help" ]] && {
+	echo "$usage"
+	[[ $1 == "--help" ]]; exit # exit 0 if --help
+}
+
+[[ $OSTYPE != *darwin* ]] && echo "SKIP: OS X only" && exit 0
+
+output="$(osascript <<EOF 2>&1
+tell application "Finder"
+	set _selection to (get selection)
+	if (count of _selection) = 0 then
+		tell first window to activate
+		set _selection to (get selection) --try again
+	end if
+    repeat with s in _selection
+        log (POSIX path of (s as alias)) --2 stderr
+    end repeat
+end tell
+EOF
+)"
+exit=$?
+[[ $exit == 0 ]] && { echo "$output"; exit; }
+[[ "$output" == *"execution error: Finder got an error: Application isn"*"t running. (-600)"* ]] && {
+	echo "$output
+FIX: restart Finder or OS X"
+	exit $exit
+}
+echo "$output"
+exit $exit

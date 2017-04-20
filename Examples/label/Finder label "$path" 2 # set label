@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+{ set +x; } 2>/dev/null
+
+[[ $OSTYPE != *darwin* ]] && echo "SKIP: OS X only" && exit 0
+
+path=~/Downloads
+label=2 # red
+set -x
+Finder label "$path" 2
+Finder label "$path"
+open -R "$path"

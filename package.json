@@ -1,0 +1,51 @@
+{
+    "bin": {
+        ".choose-file": [
+            "./bin/.choose-file"
+        ], 
+        ".choose-folder": [
+            "./bin/.choose-folder"
+        ], 
+        ".finder---help": [
+            "./bin/.finder---help"
+        ], 
+        ".finder-comment": [
+            "./bin/.finder-comment"
+        ], 
+        ".finder-icon": [
+            "./bin/.finder-icon"
+        ], 
+        ".finder-label": [
+            "./bin/.finder-label"
+        ], 
+        ".finder-open": [
+            "./bin/.finder-open"
+        ], 
+        ".finder-pid": [
+            "./bin/.finder-pid"
+        ], 
+        ".finder-selection": [
+            "./bin/.finder-selection"
+        ], 
+        "finder": [
+            "./bin/finder"
+        ], 
+        "requirements.txt": [
+            "./bin/requirements.txt"
+        ]
+    }, 
+    "description": "Finder commands (OS X)", 
+    "keywords": [
+        "Finder"
+    ], 
+    "name": "Finder-command", 
+    "readme": "<!--\nREADME generated with readmemako.py (github.com/russianidiot/readme-mako.py) and .README dotfiles (github.com/russianidiot-dotfiles/.README)\n-->\n\n<p align=\"center\">\n    <b>Finder commands (OS X)</b>\n</p>\n\n#### Install\n\n`[sudo] pip install Finder-command`\n\n`[sudo] sudo npm install -g Finder-command`\n\n#### Usage\n```bash\n# finder --help\nusage: .finder---help COMMAND [options]\n\nAvailable commands:\n\ttodo\n```\n\n#### Example\n\n```bash\n# comment\n$ Finder comment $path \"new comment\"\n$ Finder comment $path\nnew comment\n$ Finder comment $path \"\" # unset comment\n\n# label\n# 0 = none\n# 1 = orange\n# 2 = red\n# 3 = yellow\n# 4 = blue\n# 5 = purple\n# 6 = green\n# 7 = grey \n$ Finder label $path\n0\n\n$ Finder label $path 2 # set red\n$ Finder label $path\n2\n```\n\n[Examples/](https://github.com/russianidiot/Finder-command.sh.cli/tree/master/Examples)\n\n#### Issues\n*\t'execution error: Finder got an error: Application isnt running. (-600)' - restart Finder or OS X\n\nFeedback\n[![GitHub issues](https://img.shields.io/github/issues/russianidiot/Finder-command.sh.cli.svg)](https://github.com/russianidiot/Finder-command.sh.cli/issues)\n[![Join the chat at https://gitter.im/russianidiot/Finder-command.sh.cli](https://badges.gitter.im/russianidiot/Finder-command.sh.cli.svg)](https://gitter.im/russianidiot/Finder-command.sh.cli)\n[![GitHub followers](https://img.shields.io/github/followers/russianidiot.svg?style=social&label=Follow)](https://github.com/russianidiot)", 
+    "repository": {
+        "bugs": [
+            "https://github.com/russianidiot/Finder-command.sh.cli/issues"
+        ], 
+        "type": "git", 
+        "url": "https://github.com/russianidiot/Finder-command.sh.cli"
+    }, 
+    "version": "0.0.11"
+}
